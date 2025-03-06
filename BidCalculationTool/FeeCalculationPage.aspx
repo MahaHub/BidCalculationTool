@@ -28,7 +28,7 @@
         </asp:DropDownList><br />
         <br />
 
-        <asp:GridView ID="GridViewResults" runat="server" AutoGenerateColumns="false" CssClass="table" BorderWidth="1px" BorderColor="black" CellPadding="5">
+        <asp:GridView ID="GridViewResults" runat="server" AutoGenerateColumns="false" CssClass="table" BorderWidth="1px" BorderColor="black" CellPadding="5" Style="width: 50%;">
             <Columns>
                 <asp:BoundField DataField="FeeType" HeaderText="Fee Type" SortExpression="FeeType" />
                 <asp:BoundField DataField="Amount" HeaderText="Amount" SortExpression="Amount" />
