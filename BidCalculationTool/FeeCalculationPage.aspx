@@ -17,7 +17,7 @@
         <h2>Fee Calculation Results</h2>
 
         <label for="txtBasePrice">Vehicle Base Price: </label>
-        <asp:TextBox ID="txtBasePrice" runat="server" Width="100px" AutoPostBack="true" OnTextChanged="txtBasePrice_TextChanged" oninput="validateBasePrice()"></asp:TextBox><br />
+        <asp:TextBox ID="txtBasePrice" runat="server" Width="100px" AutoCompleteType="Disabled" AutoPostBack="true" OnTextChanged="txtBasePrice_TextChanged" oninput="validateBasePrice()"></asp:TextBox><br />
         <span id="basePriceError" style="color: red; display: none;">Invalid entry. Please enter a valid number.</span>
         <br />
 
