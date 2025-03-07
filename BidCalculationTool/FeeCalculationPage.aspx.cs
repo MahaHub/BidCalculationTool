@@ -1,5 +1,6 @@
 ﻿using BidCalculationTool.BusinessLogic;
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -13,7 +14,7 @@ namespace BidCalculationTool
         {
             if (!IsPostBack)
             {
-                RecalculateTotalCost();
+                BindGrid(new Vehicle(), new FeeCalculator());
             }
         }
 
@@ -36,31 +37,36 @@ namespace BidCalculationTool
                 Vehicle.VehicleType vehicleType = (Vehicle.VehicleType)Enum.Parse(typeof(Vehicle.VehicleType), ddlVehicleType.SelectedValue);
                 Vehicle vehicle = new Vehicle(basePrice, vehicleType);
 
-                var feeResults = GetFees(vehicle, feeCalculator);
-
-                GridViewResults.DataSource = feeResults;
-                GridViewResults.DataBind();
+                BindGrid(vehicle, feeCalculator);
 
                 decimal totalCost = feeCalculator.CalculateTotalCost(vehicle);
                 lblTotalCost.Text = totalCost.ToString("C");
             }
         }
 
-        private Object GetFees(Vehicle vehicle, FeeCalculator feeCalculator)
+        private void BindGrid(Vehicle vehicle, FeeCalculator feeCalculator)
         {
-            decimal basicBuyerFee = feeCalculator.CalculateBasicBuyerFee(vehicle);
-            decimal sellersSpecialFee = feeCalculator.CalculateSellersSpecialFee(vehicle);
-            decimal AssociationFee = feeCalculator.CalculateAssociationFee(vehicle);
+            decimal basicBuyerFee = 0.0m;
+            decimal sellersSpecialFee = 0.0m;
+            decimal AssociationFee = 0.0m;
 
-            var feeResults = new[]
+            if (txtBasePrice.Text != "")
             {
-                    new { FeeType = "Basic Buyer Fee", Amount = basicBuyerFee },
-                    new { FeeType = "Seller's Special Fee", Amount = sellersSpecialFee },
-                    new { FeeType = "Association Fee", Amount = AssociationFee },
-                    new { FeeType = "Storage fee", Amount = STORAGE_FEE },
-                };
+                basicBuyerFee = feeCalculator.CalculateBasicBuyerFee(vehicle);
+                sellersSpecialFee = feeCalculator.CalculateSellersSpecialFee(vehicle);
+                AssociationFee = feeCalculator.CalculateAssociationFee(vehicle);
+            }
 
-            return feeResults;
+            var feeResults = new List<object>
+            {
+                new { FeeType = "Basic Buyer Fee", Amount = basicBuyerFee > 0 ? basicBuyerFee : 0.00m },
+                new { FeeType = "Seller's Special Fee", Amount = sellersSpecialFee > 0 ? sellersSpecialFee : 0.00m },
+                new { FeeType = "Association Fee", Amount = AssociationFee > 0 ? AssociationFee : 0.00m },
+                new { FeeType = "Storage fee", Amount = txtBasePrice.Text != "" ? STORAGE_FEE : 0.00m }
+            };
+
+            GridViewResults.DataSource = feeResults;
+            GridViewResults.DataBind();
         }
     }
 }

@@ -17,6 +17,8 @@ namespace BidCalculationTool.BusinessLogic
         public decimal BasePrice { get; set; }
         public VehicleType Type { get; set; }
 
+        public Vehicle() {}
+
         public Vehicle(decimal basePrice, VehicleType type)
         {
             BasePrice = basePrice;
