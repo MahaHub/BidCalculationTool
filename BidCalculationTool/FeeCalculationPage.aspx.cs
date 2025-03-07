@@ -31,23 +31,12 @@ namespace BidCalculationTool
         {
             if (decimal.TryParse(txtBasePrice.Text, out decimal basePrice))
             {
-                Vehicle.VehicleType vehicleType = (Vehicle.VehicleType)Enum.Parse(typeof(Vehicle.VehicleType), ddlVehicleType.SelectedValue);
-
-                Vehicle vehicle = new Vehicle(basePrice, vehicleType);
-
                 FeeCalculator feeCalculator = new FeeCalculator();
 
-                decimal basicBuyerFee = feeCalculator.CalculateBasicBuyerFee(vehicle);
-                decimal sellersSpecialFee = feeCalculator.CalculateSellersSpecialFee(vehicle);
-                decimal AssociationFee = feeCalculator.CalculateAssociationFee(vehicle);
+                Vehicle.VehicleType vehicleType = (Vehicle.VehicleType)Enum.Parse(typeof(Vehicle.VehicleType), ddlVehicleType.SelectedValue);
+                Vehicle vehicle = new Vehicle(basePrice, vehicleType);
 
-                var feeResults = new[]
-                {
-                    new { FeeType = "Basic Buyer Fee", Amount = basicBuyerFee },
-                    new { FeeType = "Seller's Special Fee", Amount = sellersSpecialFee },
-                    new { FeeType = "Association Fee", Amount = AssociationFee },
-                    new { FeeType = "Storage fee", Amount = STORAGE_FEE },
-                };
+                var feeResults = GetFees(vehicle, feeCalculator);
 
                 GridViewResults.DataSource = feeResults;
                 GridViewResults.DataBind();
@@ -55,6 +44,23 @@ namespace BidCalculationTool
                 decimal totalCost = feeCalculator.CalculateTotalCost(vehicle);
                 lblTotalCost.Text = totalCost.ToString("C");
             }
+        }
+
+        private Object GetFees(Vehicle vehicle, FeeCalculator feeCalculator)
+        {
+            decimal basicBuyerFee = feeCalculator.CalculateBasicBuyerFee(vehicle);
+            decimal sellersSpecialFee = feeCalculator.CalculateSellersSpecialFee(vehicle);
+            decimal AssociationFee = feeCalculator.CalculateAssociationFee(vehicle);
+
+            var feeResults = new[]
+            {
+                    new { FeeType = "Basic Buyer Fee", Amount = basicBuyerFee },
+                    new { FeeType = "Seller's Special Fee", Amount = sellersSpecialFee },
+                    new { FeeType = "Association Fee", Amount = AssociationFee },
+                    new { FeeType = "Storage fee", Amount = STORAGE_FEE },
+                };
+
+            return feeResults;
         }
     }
 }
